@@ -4,7 +4,7 @@ import TWEEN from 'three/addons/libs/tween.module.js';
 import { TrackballControls } from 'three/addons/controls/TrackballControls.js';
 import { CSS3DRenderer, CSS3DObject } from 'three/addons/renderers/CSS3DRenderer.js';
 
-import { loadSheetData } from './sheetApi.js';
+import { loadSheetData } from './api/sheet.js';
 
 let camera, scene, renderer;
 let controls;
@@ -12,14 +12,6 @@ let controls;
 const objects = [];
 const targets = { table: [], sphere: [], helix: [], grid: [] };
 
-/*
-const res = await fetch('./employees.json');
-if (!res.ok) {
-  throw new Error(`HTTP ${res.status} loading JSON`);
-}
-const data = await res.json();
-const table = data.table;
-*/
 
 const data = await loadSheetData();
 const table = data.table;
@@ -91,7 +83,7 @@ function init() {
         const rowIndex = Math.floor(index / 20) + 1;
 
         const object = new THREE.Object3D();
-        object.position.x = ( colIndex * 140 ) - 1130;
+        object.position.x = ( colIndex * 140 ) - 1400;
         object.position.y = - ( rowIndex * 180 ) + 1000;
 
         targets.table.push( object );

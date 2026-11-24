@@ -9,6 +9,7 @@ export async function loadSheetData({ forceRefresh = false } = {}) {
   //const tFetchStart = performance.now();
   const response = await fetch(url.toString(), {
     method: 'GET',
+    credentials: 'include',
     headers: {
       Accept: 'application/json',
     },
@@ -22,3 +23,4 @@ export async function loadSheetData({ forceRefresh = false } = {}) {
 
   return response.json();
 }
+
