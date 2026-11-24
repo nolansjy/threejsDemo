@@ -241,49 +241,7 @@ function init() {
 
     });
 
-/*
-    for ( let i = 0; i < table.length; i += 5 ) {
 
-        const element = document.createElement( 'div' );
-        element.className = 'element';
-        element.style.backgroundColor = 'rgba(0,127,127,' + ( Math.random() * 0.5 + 0.25 ) + ')';
-
-        const number = document.createElement( 'div' );
-        number.className = 'number';
-        number.textContent = ( i / 5 ) + 1;
-        element.appendChild( number );
-
-        const symbol = document.createElement( 'div' );
-        symbol.className = 'symbol';
-        symbol.textContent = table[ i ];
-        element.appendChild( symbol );
-
-        const details = document.createElement( 'div' );
-        details.className = 'details';
-        details.innerHTML = table[ i + 1 ] + '<br>' + table[ i + 2 ];
-        element.appendChild( details );
-
-        const objectCSS = new CSS3DObject( element );
-        objectCSS.position.x = Math.random() * 4000 - 2000;
-        objectCSS.position.y = Math.random() * 4000 - 2000;
-        objectCSS.position.z = Math.random() * 4000 - 2000;
-        scene.add( objectCSS );
-
-        objects.push( objectCSS );
-
-        //
-
-        const colIndex = (index % 20) + 1;
-        const rowIndex = Math.floor(index / 20) + 1;
-
-        const object = new THREE.Object3D();
-        object.position.x = ( colIndex * 140 ) - 770;
-        object.position.y = - ( rowIndex * 180 ) + 1890;
-
-        targets.table.push( object );
-
-    }
-*/
     // sphere
 
     const vector = new THREE.Vector3();
@@ -309,8 +267,11 @@ function init() {
 
     for ( let i = 0, l = objects.length; i < l; i ++ ) {
 
-        const theta = i * 0.175 + Math.PI;
-        const y = - ( i * 8 ) + 450;
+        const strand = i % 2; // split into even/odd strands
+        const step = Math.floor(i/2);
+
+        const theta = step * 0.175 + strand * Math.PI;
+        const y = - (step * 32) + 450; 
 
         const object = new THREE.Object3D();
 
@@ -333,8 +294,8 @@ function init() {
         const object = new THREE.Object3D();
 
         object.position.x = ( ( i % 5 ) * 400 ) - 800;
-        object.position.y = ( - ( Math.floor( i / 5 ) % 5 ) * 400 ) + 800;
-        object.position.z = ( Math.floor( i / 25 ) ) * 1000 - 2000;
+        object.position.y = ( - ( Math.floor( i / 5 ) % 4 ) * 400 ) + 600;
+        object.position.z = ( Math.floor( i / 20 ) ) * 1000 - 4500;
 
         targets.grid.push( object );
 
