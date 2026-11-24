@@ -5,7 +5,12 @@ import cors from 'cors';
 
 import { GoogleSpreadsheet } from 'google-spreadsheet';
 import { JWT, OAuth2Client } from 'google-auth-library';
-
+import {
+  createSessionToken,
+  readSessionToken,
+  setSessionCookie,
+  clearSessionCookie,
+} from './cookies.js';
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -21,31 +26,24 @@ const allowedOrigins = ['http://localhost:5173', 'https://threejsdemo.onrender.c
 app.use(cors({ origin: allowedOrigins, credentials:true }));
 app.use(express.json());
 
-app.use(session({
-  secret: process.env.SESSION_SECRET,
-  resave: false,
-  saveUninitialized: false,
-  cookie: {
-    httpOnly: true,
-    sameSite: isProduction ? 'none' : 'lax',    
-    secure: isProduction,
-    maxAge: 1000 * 60 * 60 * 24,
-  },
-}));
+app.use(cookieParser());
 
 // auth functions
 
 const oauthClient = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
-function hasSessionUser(req) {
-  return Boolean(req.session && req.session.user);
-}
 
-function ensureAuth(req, res, next) {
-  if (hasSessionUser(req)) {
-    return next();
+function requireAuth(req, res, next) {
+  const session = readSessionToken(req);
+  if(!session){
+      return res.status(401).json({ error: 'Unauthorized' });
   }
-  return res.status(401).json({ error: 'Unauthorized' });
+  req.user = {
+    sub: session.sub,
+    email: session.email,
+    name: session.name,
+  };
+  next();
 }
 
 
@@ -99,20 +97,13 @@ app.post('/auth/google/token', async (req, res) => {
     if (!payload || !payload.sub) {
       return res.status(401).json({ error: 'Invalid token payload' });
     }
+    const {sub, email, name} = payload;
+    const token = createSessionToken({sub, email, name});
+    setSessionCookie(res, token);
 
-    req.session.regenerate((err) => {
-      if (err) {
-        return res.status(500).json({ error: 'Session error' });
-      }
-
-      req.session.user = {
-        id: payload.sub,
-        name: payload.name || '',
-        email: payload.email || '',
-        picture: payload.picture || '',
-      };
-
-      return res.json({ ok: true, user: req.session.user });
+    return res.json({
+      authenticated: true,
+      user: { sub, email, name },
     });
   } catch {
     return res.status(401).json({ error: 'Invalid Google credential' });
@@ -120,25 +111,21 @@ app.post('/auth/google/token', async (req, res) => {
 });
 
 app.post('/auth/logout', (req, res) => {
-  if (!req.session) {
-    return res.json({ ok: true });
-  }
-  req.session.destroy(() => {
-    res.clearCookie('connect.sid');
-    return res.json({ ok: true });
-  });
+  clearSessionCookie(res);
+  return res.json({ ok: true });
 });
 
-app.get('/auth/me', (req, res) => {
-  if (req.session && req.session.user) {
-    return res.json({ authenticated: true, user: req.session.user });
-  }
-  return res.status(401).json({ authenticated: false });
+app.get('/auth/me', requireAuth, (req, res) => {
+  const { sub, email, name } = req.user;
+  return res.json({
+    authenticated: true,
+    user: { sub, email, name },
+  });
 });
 
 
 // Sheets API endpoint
-app.get('/api/sheet-data', ensureAuth, async (req, res) => {
+app.get('/api/sheet-data', requireAuth, async (req, res) => {
   try {
     const forceRefresh = req.query.refresh === '1';
     const data = await fetchSpreadsheetData(forceRefresh);
