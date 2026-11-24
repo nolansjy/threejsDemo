@@ -7,7 +7,8 @@ export function redirectToLogin(loginPath = '/auth.html') {
 export async function getSession() {
   try {
     const res = await fetch(`${API_BASE_URL}/auth/me`, {
-      credentials: 'include',
+      method: 'GET',
+      credentials: 'include'
     });
 
     if (!res.ok) {

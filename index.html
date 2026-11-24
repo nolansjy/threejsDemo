@@ -10,15 +10,25 @@
         import { getSession } from './src/api/auth.js';
 
         async function routeFromSession() {
+          try{
             const session = await getSession();
             if (session) {
-                window.location.replace('/app.html');
+                window.location.replace('./app.html');
             } else {
-                window.location.replace('/auth.html');
+                window.location.replace('./auth.html');
             }
+          }catch(err){
+            console.error('Session check failed:', err);
+            window.location.replace('./auth.html');
+          }
+            
         }
 
-        routeFromSession();
+        if (document.readyState === 'loading') {
+          document.addEventListener('DOMContentLoaded', routeFromSession, { once: true });
+        } else {
+          routeFromSession();
+        }
     </script>
   </body>
 </html>

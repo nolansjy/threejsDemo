@@ -8,19 +8,59 @@
 		<meta property="og:type" content="website">
 		<meta property="og:url" content="https://threejs.org/examples/css3d_periodictable.html">
 		<meta property="og:image" content="https://threejs.org/examples/screenshots/css3d_periodictable.jpg">
-
+		<style>
+			body {
+				background-color: #000;
+				font-family: monospace;
+				color: #fff;
+				text-align: center;
+			}
+			.container {
+				display: flex;
+				justify-content: center;
+				align-items: center;
+				min-height: 80dvh;
+			}
+			.card {
+				display: flex;
+				align-items: center;
+				flex-direction: column;
+				outline: 1px solid #8ff;
+    			padding: 5px 10px;
+				border: 0px;
+				color: #8ff;
+				font-variant: small-caps;
+			}
+		</style>
 		<script src="https://accounts.google.com/gsi/client" async></script>
+		
 	</head>
 	<body>
 
 		<div
 		id="g_id_onload"
 		data-auto_prompt="false"
+		data-context="signin"
 		data-callback="handleCredentialResponse"
 		data-client_id="%VITE_GOOGLE_CLIENT_ID%"
 		></div>
 		<!-- g_id_signin places the button on a page and supports customization -->
-		<div class="g_id_signin"></div>
+		<p>threejs.org  css3d - employee demo</p>
+		<div class="container">
+			<div class="card">
+			<h1>Welcome to the Demo!</h1>
+			<h3>Please sign in.</h3>
+			<div class="g_id_signin"
+			data-type="standard"
+			data-shape="rectangular"
+			data-theme="outline_dark"
+			data-text="signin_with"
+			data-size="large"
+			data-logo_alignment="center"
+			data-width="300"></div>
+			</div>
+		</div>
+		
 
 		<script type="module">
 		import { getSession, loginWithGoogleCredential } from './src/api/auth.js';
