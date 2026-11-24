@@ -6,7 +6,7 @@ import { GoogleSpreadsheet } from 'google-spreadsheet';
 import { JWT } from 'google-auth-library';
 
 const app = express();
-const PORT = 3001;
+const PORT = process.env.PORT || 3001;
 const SPREADSHEET_ID = '10A6XJFjJ_A9ytwK2U4PVXgbreAZyvvG-o-br7y5l33U';
 
 const allowedOrigins = 'http://localhost:5173'
