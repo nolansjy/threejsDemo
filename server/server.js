@@ -1,6 +1,6 @@
 import 'dotenv/config';
 import express from 'express';
-import session from 'express-session';
+import cookieParser from 'cookie-parser';
 import cors from 'cors';
 
 import { GoogleSpreadsheet } from 'google-spreadsheet';
