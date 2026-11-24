@@ -2,7 +2,7 @@
 Webpage: https://threejsdemo.onrender.com  
 Server: https://sheetsapi-f7ls.onrender.com  
 
-This is a website with a Vite/Three.js front-end and Node.js backend hosted on Render. The Node server fetches Google Sheets data and handles login credentials. 
+This is a website with a Vite/Three.js front-end and Node.js backend hosted on Render. Note that the Render server may take a while to load on first start, as it spins down after inactivity (15 minutes). 
 
 You must log in with Google before accessing the site. Login uses a GSI popup and the session is stored with a HMAC-signed cookie.
 
