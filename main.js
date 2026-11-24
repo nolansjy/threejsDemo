@@ -4,6 +4,8 @@ import TWEEN from 'three/addons/libs/tween.module.js';
 import { TrackballControls } from 'three/addons/controls/TrackballControls.js';
 import { CSS3DRenderer, CSS3DObject } from 'three/addons/renderers/CSS3DRenderer.js';
 
+const API_BASE_URL = import.meta.env.VITE_API_URL;
+
 const table = [
     'H', 'Hydrogen', '1.00794', 1, 1,
     'He', 'Helium', '4.002602', 18, 1,
@@ -125,6 +127,29 @@ const table = [
     'Og', 'Oganesson', '(294)', 18, 7
 ];
 
+async function loadSheetData({ forceRefresh = false } = {}) {
+  const url = new URL(`${API_BASE_URL}/api/sheet-data`);
+  if (forceRefresh) {
+    url.searchParams.set('refresh', '1');
+  }
+
+  const tFetchStart = performance.now();
+  const response = await fetch(url.toString(), {
+    method: 'GET',
+    headers: {
+      Accept: 'application/json',
+    },
+  });
+  console.log(`fetch() headers/response in ${Math.round(performance.now() - tFetchStart)} ms`);
+
+  if (!response.ok) {
+    const errorBody = await response.json().catch(() => ({}));
+    throw new Error(errorBody.error || `Request failed with status ${response.status}`);
+  }
+
+  return response.json();
+}
+
 let camera, scene, renderer;
 let controls;
 
@@ -133,6 +158,10 @@ const targets = { table: [], sphere: [], helix: [], grid: [] };
 
 init();
 animate();
+
+const data = await loadSheetData();
+console.log(data.title);
+
 
 function init() {
 
