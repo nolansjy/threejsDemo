@@ -1,8 +1,5 @@
 const API_BASE_URL = import.meta.env.VITE_API_URL;
 
-console.log(API_BASE_URL);
-
-
 export async function loadSheetData({ forceRefresh = false } = {}) {
   const url = new URL(`${API_BASE_URL}/api/sheet-data`);
   if (forceRefresh) {

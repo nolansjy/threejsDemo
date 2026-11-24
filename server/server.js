@@ -9,7 +9,7 @@ const app = express();
 const PORT = process.env.PORT || 3001;
 const SPREADSHEET_ID = '10A6XJFjJ_A9ytwK2U4PVXgbreAZyvvG-o-br7y5l33U';
 
-const allowedOrigins = 'http://localhost:5173'
+const allowedOrigins = ['http://localhost:5173', 'https://threejsdemo.onrender.com']
 
 app.use(cors({ origin: allowedOrigins }));
 
