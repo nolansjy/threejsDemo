@@ -6,6 +6,7 @@ import { CSS3DRenderer, CSS3DObject } from 'three/addons/renderers/CSS3DRenderer
 
 const API_BASE_URL = import.meta.env.VITE_API_URL;
 
+/*
 const table = [
     'H', 'Hydrogen', '1.00794', 1, 1,
     'He', 'Helium', '4.002602', 18, 1,
@@ -133,14 +134,14 @@ async function loadSheetData({ forceRefresh = false } = {}) {
     url.searchParams.set('refresh', '1');
   }
 
-  const tFetchStart = performance.now();
+  //const tFetchStart = performance.now();
   const response = await fetch(url.toString(), {
     method: 'GET',
     headers: {
       Accept: 'application/json',
     },
   });
-  console.log(`fetch() headers/response in ${Math.round(performance.now() - tFetchStart)} ms`);
+  //console.log(`fetch() headers/response in ${Math.round(performance.now() - tFetchStart)} ms`);
 
   if (!response.ok) {
     const errorBody = await response.json().catch(() => ({}));
@@ -149,6 +150,7 @@ async function loadSheetData({ forceRefresh = false } = {}) {
 
   return response.json();
 }
+*/
 
 let camera, scene, renderer;
 let controls;
@@ -156,12 +158,18 @@ let controls;
 const objects = [];
 const targets = { table: [], sphere: [], helix: [], grid: [] };
 
+const res = await fetch('./employees.json');
+if (!res.ok) {
+  throw new Error(`HTTP ${res.status} loading JSON`);
+}
+const data = await res.json();
+const table = data.table;
+
 init();
 animate();
 
-const data = await loadSheetData();
-console.log(data.title);
-
+//const data = await loadSheetData();
+//console.log(data.title);
 
 function init() {
 
@@ -171,7 +179,69 @@ function init() {
     scene = new THREE.Scene();
 
     // table
+    
+    table.forEach((row, index) =>{
+        const netWorth = Number(String(row['Net Worth']).replace(/\$|,|\.\d{2}/gm,''));
 
+        let color = '';
+        if(netWorth < 100000){
+            color = 'rgba(239,48,34,0.4)';
+        }else if(netWorth > 100000 && netWorth < 200000){
+            color = 'rgba(253,202,53,0.4)';
+        }else{
+            color = 'rgba(58,159,72,0.4)';
+        }
+
+        const employee = document.createElement('div');
+        employee.className = 'employee';
+        employee.style.backgroundColor = color;
+
+        const details = document.createElement('div');
+        details.className = 'details';
+        details.innerHTML = '<span>' + row.Country + '</span>' + '<span>' + row.Age + '</span>';
+        employee.appendChild(details);
+
+        const photo = document.createElement('div');
+        photo.className = 'photo';
+        const photoImg = document.createElement('img');
+        photoImg.src = row.Photo;
+        photoImg.alt = row.Name;
+        photoImg.loading = 'lazy';
+        photo.appendChild(photoImg);
+        employee.appendChild(photo);
+
+        const name = document.createElement('div');
+        name.className = 'name';
+        name.textContent = row.Name;
+        employee.appendChild(name);
+
+        const interest = document.createElement('div');
+        interest.className = 'interest';
+        interest.textContent = row.Interest;
+        employee.appendChild(interest);
+
+        const objectCSS = new CSS3DObject( employee );
+        objectCSS.position.x = Math.random() * 4000 - 2000;
+        objectCSS.position.y = Math.random() * 4000 - 2000;
+        objectCSS.position.z = Math.random() * 4000 - 2000;
+        scene.add( objectCSS );
+
+        objects.push( objectCSS );
+
+        // 
+
+        const colIndex = (index % 20) + 1;
+        const rowIndex = Math.floor(index / 20) + 1;
+
+        const object = new THREE.Object3D();
+        object.position.x = ( colIndex * 140 ) - 1130;
+        object.position.y = - ( rowIndex * 180 ) + 1000;
+
+        targets.table.push( object );
+
+    });
+
+/*
     for ( let i = 0; i < table.length; i += 5 ) {
 
         const element = document.createElement( 'div' );
@@ -203,14 +273,17 @@ function init() {
 
         //
 
+        const colIndex = (index % 20) + 1;
+        const rowIndex = Math.floor(index / 20) + 1;
+
         const object = new THREE.Object3D();
-        object.position.x = ( table[ i + 3 ] * 140 ) - 1330;
-        object.position.y = - ( table[ i + 4 ] * 180 ) + 990;
+        object.position.x = ( colIndex * 140 ) - 770;
+        object.position.y = - ( rowIndex * 180 ) + 1890;
 
         targets.table.push( object );
 
     }
-
+*/
     // sphere
 
     const vector = new THREE.Vector3();
