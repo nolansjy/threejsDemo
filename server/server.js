@@ -28,11 +28,6 @@ app.use(express.json());
 
 app.use(cookieParser());
 
-app.use((req, res, next) => {
-  res.setHeader('Cross-Origin-Opener-Policy', 'same-origin-allow-popups');
-  next();
-});
-
 // auth functions
 
 const oauthClient = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
@@ -84,14 +79,6 @@ async function fetchSpreadsheetData(forceRefresh = false) {
   return cachedData;
 }
 
-app.get('/ping', (req, res) => {
-  res.status(200).json({
-    status: 'ok',
-    uptime: process.uptime(),
-    timestamp: new Date().toISOString()
-  });
-});
-
 // Auth API endpoints
 
 app.post('/auth/google/token', async (req, res) => {
@@ -123,11 +110,7 @@ app.post('/auth/google/token', async (req, res) => {
   }
 });
 
-app.post('/auth/logout', async (req, res) => {
-  const token = req.cookies?.session_token;
-  if (token) {
-    await revokeSessionInStore(token); 
-  }
+app.post('/auth/logout', (req, res) => {
   clearSessionCookie(res);
   return res.json({ ok: true });
 });
