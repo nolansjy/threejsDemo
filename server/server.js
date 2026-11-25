@@ -118,7 +118,11 @@ app.post('/auth/google/token', async (req, res) => {
   }
 });
 
-app.post('/auth/logout', (req, res) => {
+app.post('/auth/logout', async (req, res) => {
+  const token = req.cookies?.session_token;
+  if (token) {
+    await revokeSessionInStore(token); 
+  }
   clearSessionCookie(res);
   return res.json({ ok: true });
 });
