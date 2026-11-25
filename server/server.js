@@ -28,6 +28,11 @@ app.use(express.json());
 
 app.use(cookieParser());
 
+app.use((req, res, next) => {
+  res.setHeader('Cross-Origin-Opener-Policy', 'same-origin-allow-popups');
+  next();
+});
+
 // auth functions
 
 const oauthClient = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
