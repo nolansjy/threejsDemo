@@ -15,7 +15,7 @@
 
 		<div id="info">
 			<a href="https://threejs.org" target="_blank" rel="noopener">three.js</a> css3d - employee info.
-			<button id="logout">LOGOUT</button>
+			<!--button id="logout">LOGOUT</button-->
 		</div>
 		<div id="container"></div>
 		<div id="menu">
@@ -34,12 +34,12 @@
 			}
 		</script>
 
-	<script type="module">
+	<!--script type="module">
 		import { requireSession, logout } from './src/api/auth.js';
 		requireSession();
 		const buttonLogout = document.getElementById('logout');
 		buttonLogout.addEventListener('click', function(){
 			logout();
 		});
-	</script>
+	</script-->
 	<script type="module" src="./src/main.js"></script>
