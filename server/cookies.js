@@ -55,7 +55,7 @@ export function setSessionCookie(res, token) {
   const isProd = process.env.NODE_ENV === 'production';
   res.cookie(COOKIE_NAME, token, {
     httpOnly: true,
-    sameSite: isProd ? 'none' : 'lax',
+    sameSite: 'lax',
     secure: isProd,
     path: '/',
     maxAge: TTL_MS,
@@ -66,7 +66,7 @@ export function clearSessionCookie(res) {
   const isProd = process.env.NODE_ENV === 'production';
   res.clearCookie(COOKIE_NAME, {
     httpOnly: true,
-    sameSite: isProd ? 'none' : 'lax',
+    sameSite: 'lax',
     secure: isProd,
     path: '/',
   });
