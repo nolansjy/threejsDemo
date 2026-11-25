@@ -11,3 +11,5 @@ server/ --> Node server files
 src/ --> main.js, src/api --> exports api functions, src/styles --> css files  
 index.html --> redirects to auth.html for login or app.html if already logged in  
 
+## Known Bugs
+- Logging in after logging out is bugged. A workaround is clearing website cookies manually. 
