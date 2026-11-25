@@ -79,6 +79,14 @@ async function fetchSpreadsheetData(forceRefresh = false) {
   return cachedData;
 }
 
+app.get('/ping', (req, res) => {
+  res.status(200).json({
+    status: 'ok',
+    uptime: process.uptime(),
+    timestamp: new Date().toISOString()
+  });
+});
+
 // Auth API endpoints
 
 app.post('/auth/google/token', async (req, res) => {
